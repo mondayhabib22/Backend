@@ -36,4 +36,19 @@ const getPosts = async (req, res) => {
   }
 }
 
+//Update a post
+const updatePost = async (req, res) => {
+  try {
+    //Basic vallidation to check if the body is empty or not
+    if (Object.keys(req.body ).length === 0) {
+      return res.status(400).json({ message: "Request body is empty" });
+    }
+
+    const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+  } catch (error) {
+    
+  }
+}
+
 export { createPost, getPosts };

@@ -40,7 +40,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    // Check if User exists
+    // Check if User does not exists
     const { email, password } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
@@ -52,8 +52,20 @@ const loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
+    res.status(200).json({
+      message: "User logged in successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        password: user.password,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error logging in", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error logging in", error: error.message });
   }
 };
 
@@ -62,12 +74,12 @@ const logoutUser = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ message: "Error logging out", error: error.message });
   }
